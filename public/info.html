@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/img/icon.png" type="image/png">
+
+    <title>Mis Citas - Clínica Familiar México</title>
+    <style>
+        /* Tu CSS existente para la nav bar y el header/hero (idéntico a tu index.html y register.html) */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        /* Header */
+        .header {
+            background: #222;
+            color: white;
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        .nav-menu a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .nav-menu a:hover {
+            color: #35ffee;
+        }
+
+        .mobile-menu {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        /* Hero (ajustado para la página de info) */
+        .hero {
+            min-height: 100vh; /* Ajusta la altura según el contenido */
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://online.anahuac.mx/images/d_alimentacion_nutricion_salud_bienestar_anahuac_online_thumb_736w.webp');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            padding-top: 80px; /* Para que el contenido no quede bajo la nav bar fija */
+        }
+
+        .hero-content {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            max-width: 800px; /* Ancho para mostrar las citas */
+            width: 90%;
+            margin-top: 50px; /* Espacio adicional para el contenido */
+        }
+
+        .hero-content h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .hero-content p {
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            color: #eee;
+        }
+
+        /* Estilos para la lista de citas */
+        #citas-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 30px;
+            text-align: left;
+        }
+
+        .cita-item {
+            background: #333;
+            border: 1px solid #555;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            color: white;
+        }
+
+        .cita-item h3 {
+            margin-top: 0;
+            color: #35ffee;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .cita-item p {
+            margin-bottom: 8px;
+            font-size: 1rem;
+            color: #ddd;
+        }
+
+        .cita-item p strong {
+            color: white;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: #222;
+                flex-direction: column;
+                padding: 20px;
+            }
+
+            .nav-menu.active {
+                display: flex;
+            }
+
+            .mobile-menu {
+                display: block;
+            }
+
+            .hero-content {
+                max-width: 90%;
+                padding: 30px;
+            }
+
+            .hero-content h1 {
+                font-size: 2rem;
+                margin-bottom: 15px;
+            }
+
+            .hero-content p {
+                font-size: 1rem;
+                margin-bottom: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-content {
+                padding: 20px;
+            }
+
+            .hero-content h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+</head>
+
+<body>
+    <header class="header">
+        <nav class="nav-container">
+            <div class="logo">Clínica Familiar México ❤️</div>
+            <ul class="nav-menu" id="nav-menu">
+                <li><a href="/">Inicio</a></li>
+                <li><a href="/register.html">Registrarse</a></li>
+                <li><a href="/citas.html">Agendar Cita</a></li>
+                <li><a href="/info.html">Mis Citas</a></li> <li><a href="/logout">Cerrar Sesión</a></li> </ul>
+            <button class="mobile-menu" id="mobile-menu">☰</button>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Mis Citas Agendadas</h1>
+            <p id="user-greeting">Cargando tus citas...</p>
+            <ul id="citas-list">
+                </ul>
+            <p>
+                <a href="/citas.html" style="color: #35ffee; text-decoration: none; font-weight: bold;">Agendar una nueva cita</a>
+            </p>
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+    <script>
+        // Menú móvil
+        const mobileMenu = document.getElementById('mobile-menu');
+        const navMenu = document.getElementById('nav-menu');
+    
+        mobileMenu.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+        });
+    
+        navMenu.addEventListener('click', (e) => {
+            if (e.target.tagName === 'A') {
+                navMenu.classList.remove('active');
+            }
+        });
+    
+        // 🔒 Prevención de navegación hacia atrás si se cerró sesión
+        if (window.performance && window.performance.navigation.type === 2) {
+            window.location.href = '/login.html';
+        }
+    
+        window.onpageshow = function (event) {
+            if (event.persisted) {
+                window.location.reload();
+            }
+        };
+    
+        // Cargar citas del usuario autenticado
+        document.addEventListener('DOMContentLoaded', async () => {
+            const citasList = document.getElementById('citas-list');
+            const userGreeting = document.getElementById('user-greeting');
+    
+            try {
+                const response = await fetch('/api/mis-citas');
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        window.location.href = '/login.html?error=auth';
+                        return;
+                    }
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+    
+                const citas = await response.json();
+    
+                if (citas.length === 0) {
+                    userGreeting.textContent = 'Aún no tienes citas agendadas.';
+                    citasList.innerHTML = '<p style="color: #ddd;">Cuando agendes una cita, aparecerá aquí.</p>';
+                } else {
+                    userGreeting.textContent = 'Aquí están tus próximas citas:';
+                    citas.forEach(cita => {
+                        const li = document.createElement('li');
+                        li.classList.add('cita-item');
+    
+                        const fecha = new Date(cita.fecha_cita + 'T' + cita.hora_cita);
+                        const opcionesFecha = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                        const fechaFormateada = fecha.toLocaleDateString('es-ES', opcionesFecha);
+                        const horaFormateada = fecha.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+    
+                        li.innerHTML = `
+                            <h3>${cita.tipo_cita}</h3>
+                            <p><strong>Fecha:</strong> ${fechaFormateada}</p>
+                            <p><strong>Hora:</strong> ${horaFormateada}</p>
+                            <p><strong>Doctor:</strong> ${cita.doctor}</p>
+                            <p><strong>Notas:</strong> ${cita.notas}</p>
+                            <p style="font-size: 0.85em; color: #aaa;">Agendada el: ${new Date(cita.createdAt).toLocaleDateString('es-ES', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</p>
+                        `;
+                        citasList.appendChild(li);
+                    });
+                }
+            } catch (error) {
+                console.error('Error al cargar las citas:', error);
+                userGreeting.textContent = 'Error al cargar tus citas.';
+                citasList.innerHTML = '<p style="color: red;">No pudimos cargar tus citas. Por favor, inténtalo de nuevo más tarde.</p>';
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error de Carga',
+                    text: 'No se pudieron cargar tus citas. Por favor, inténtalo de nuevo.',
+                    confirmButtonText: 'Aceptar'
+                });
+            }
+        });
+    </script>
+    
+</body>
+
+</html>

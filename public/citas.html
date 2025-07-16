@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/img/icon.png" type="image/png">
+
+    <title>Mis Citas - Clínica Familiar México</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        /* Header */
+        .header {
+            background: #222;
+            color: white;
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        .nav-menu a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .nav-menu a:hover {
+            color: #35ffee;
+        }
+
+        .mobile-menu {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        /* Hero (ajustado para la página de citas) */
+        .hero {
+            /* Ajusta la altura según la cantidad de contenido del formulario de citas */
+            height: 120vh;
+            /* Puedes ajustar esto */
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://online.anahuac.mx/images/d_alimentacion_nutricion_salud_bienestar_anahuac_online_thumb_736w.webp');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            padding-top: 80px;
+            /* Para que el contenido no quede bajo la nav bar fija */
+        }
+
+        .hero-content {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            /* Ancho similar al formulario de registro */
+            width: 90%;
+        }
+
+        .hero-content h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .hero-content p {
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            color: #eee;
+        }
+
+        /* Estilos del formulario de citas (similar a register-form) */
+        .appointment-form label {
+            display: block;
+            text-align: left;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .appointment-form input[type="text"],
+        .appointment-form input[type="email"],
+        .appointment-form input[type="date"],
+        .appointment-form input[type="time"],
+        .appointment-form select,
+        .appointment-form textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #555;
+            border-radius: 5px;
+            background: #333;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .appointment-form input[type="text"]::placeholder,
+        .appointment-form input[type="email"]::placeholder,
+        .appointment-form input[type="date"]::placeholder,
+        .appointment-form input[type="time"]::placeholder,
+        .appointment-form select::placeholder,
+        .appointment-form textarea::placeholder {
+            color: #bbb;
+        }
+
+        /* Estilo específico para el select para que el texto sea blanco */
+        .appointment-form select option {
+            background: #333;
+            color: white;
+        }
+
+        .appointment-form select {
+            /* Asegura que la flecha del select también sea visible */
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2020%2020%22%3E%3Cpath%20fill%3D%22%23ffffff%22%20d%3D%22M9.293%2012.95l-4.95-4.95A1%201%200%20015.05%207.05L10%2012l4.95-4.95a1%201%200%20011.414%201.414l-5.657%205.657a1%201%200%2001-1.414%200z%22%2F%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.7em top 50%, 0 0;
+            background-size: 0.65em auto, 100%;
+        }
+
+
+        .appointment-form .btn {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1rem;
+            background: #2bc9e5;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .appointment-form .btn:hover {
+            background: #1a9cb3;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: #222;
+                flex-direction: column;
+                padding: 20px;
+            }
+
+            .nav-menu.active {
+                display: flex;
+            }
+
+            .mobile-menu {
+                display: block;
+            }
+
+            .hero-content {
+                max-width: 400px;
+                padding: 30px;
+            }
+
+            .hero-content h1 {
+                font-size: 2rem;
+                margin-bottom: 15px;
+            }
+
+            .hero-content p {
+                font-size: 1rem;
+                margin-bottom: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-content {
+                padding: 20px;
+            }
+
+            .hero-content h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+</head>
+
+<body>
+    <header class="header">
+        <nav class="nav-container">
+            <div class="logo">Clínica Familiar México</div>
+            <ul class="nav-menu" id="nav-menu">
+                <li><a href="/">Inicio</a></li>
+                <li><a href="/register.html">Registrarse</a></li>
+                <li><a href="/citas.html">Agendar Cita</a></li>
+                <li><a href="/info.html">Mis Citas</a></li>
+                <li><a href="/logout">Cerrar Sesión</a></li>
+            </ul>
+            <button class="mobile-menu" id="mobile-menu">☰</button>
+        </nav>
+    </header>
+
+    <section class="hero" id="citas">
+        <div class="hero-content">
+            <h1>Agendar Nueva Cita</h1>
+            <p>Por favor, selecciona el tipo de consulta, fecha y hora preferida.</p>
+            <form action="/agendar-cita" method="POST" class="appointment-form">
+                <label for="tipo_cita">Tipo de Cita:</label>
+                <select id="tipo_cita" name="tipo_cita" required>
+                    <option value="">Selecciona un tipo de cita</option>
+                    <option value="Consulta General">Consulta General</option>
+                    <option value="Pediatría">Pediatría</option>
+                    <option value="Dermatología">Dermatología</option>
+                    <option value="Cardiología">Cardiología</option>
+                    <option value="Nutrición">Nutrición</option>
+                    <option value="Psicología">Psicología</option>
+                    <option value="Oftalmología">Oftalmología</option>
+                    <option value="Odontología">Odontología</option>
+                    <option value="Ginecología">Ginecología</option>
+                </select>
+
+                <label for="fecha_cita">Fecha de la Cita:</label>
+                <input type="date" id="fecha_cita" name="fecha_cita" required>
+
+                <label for="hora_cita">Hora de la Cita:</label>
+                <input type="time" id="hora_cita" name="hora_cita" required>
+
+                <label for="doctor">Doctor Preferido (Opcional):</label>
+                <input type="text" id="doctor" name="doctor" placeholder="Ej. Dr. Juan Pérez">
+
+                <label for="notas">Notas Adicionales:</label>
+                <textarea id="notas" name="notas" rows="4"
+                    placeholder="Describe brevemente el motivo de tu cita o cualquier síntoma."></textarea>
+
+                <button type="submit" class="btn">Agendar Cita</button>
+                <br>
+                <a href="info.html">Ver mis citas existentes</a>
+            </form>
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+    <script>
+        const mobileMenu = document.getElementById('mobile-menu');
+        const navMenu = document.getElementById('nav-menu');
+    
+        mobileMenu.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+        });
+    
+        navMenu.addEventListener('click', (e) => {
+            if (e.target.tagName === 'A') {
+                navMenu.classList.remove('active');
+            }
+        });
+    
+        if (window.performance && window.performance.navigation.type === 2) {
+            window.location.href = '/login.html';
+        }
+    
+        window.onpageshow = function (event) {
+            if (event.persisted) {
+                window.location.reload();
+            }
+        };
+    
+        window.onload = function () {
+            const params = new URLSearchParams(window.location.search);
+            const success = params.get('success');
+            const error = params.get('error');
+            const message = params.get('message');
+    
+            if (success === 'true') {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Cita Agendada',
+                    text: message || '¡Tu cita ha sido agendada con éxito!',
+                    confirmButtonText: 'Aceptar'
+                }).then(() => {
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                });
+            } else if (error === 'true') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error al Agendar Cita',
+                    text: message || 'No se pudo agendar tu cita. Por favor, inténtalo de nuevo.',
+                    confirmButtonText: 'Aceptar'
+                }).then(() => {
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                });
+            }
+        };
+        document.addEventListener('DOMContentLoaded', () => {
+            const today = new Date();
+            const year = today.getFullYear();
+            let month = today.getMonth() + 1;
+            let day = today.getDate();
+    
+            if (month < 10) month = '0' + month;
+            if (day < 10) day = '0' + day;
+    
+            const minDate = `${year}-${month}-${day}`;
+            document.getElementById('fecha_cita').setAttribute('min', minDate);
+        });
+    </script>
+    
+</body>
+
+</html>
