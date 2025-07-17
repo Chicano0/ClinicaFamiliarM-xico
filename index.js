@@ -1,5 +1,4 @@
 const express = require('express');
-<<<<<<< HEAD
 const path = require('path');
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const session = require('express-session');
@@ -22,6 +21,7 @@ const client = new MongoClient(uri, {
 
 // Configuración del transportador de correo
 const transporter = nodemailer.createTransport({
+
     service: 'gmail',
     auth: {
         user: 'soporteverifiacion@gmail.com',
@@ -152,50 +152,16 @@ async function sendLoginVerificationEmail(email, code, name) {
     }
 }
 
-=======
-const bcrypt = require('bcrypt');
-const path = require('path');
-const session = require('express-session');
-const { MongoClient, ServerApiVersion } = require('mongodb');
-const app = express();
-const port = 3000;
-
-
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-
-
-app.use(session({
-    secret: 'tu_clave_secreta_segura',
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-        maxAge: 1000 * 60 * 60,
-        httpOnly: true
-    }
-}));
-
-
-const uri = "mongodb+srv://baenagaymer:molotov18@pacientes.ueptauh.mongodb.net/?retryWrites=true&w=majority&appName=pacientes";
-const client = new MongoClient(uri, {
-    serverApi: { version: ServerApiVersion.v1, strict: true, deprecationErrors: true }
-});
-
->>>>>>> af37e0af26ac3725e33a3be26602e1ba0376eb6c
+// Conexión a MongoDB
 async function connectToMongo() {
     try {
         await client.connect();
         await client.db("admin").command({ ping: 1 });
-<<<<<<< HEAD
         console.log("Conexión exitosa a MongoDB!");
-=======
-        console.log("Conectado a MongoDB Atlas correctamente.");
->>>>>>> af37e0af26ac3725e33a3be26602e1ba0376eb6c
     } catch (error) {
         console.error("Error al conectar a MongoDB Atlas:", error);
     }
 }
-<<<<<<< HEAD
 
 connectToMongo();
 
@@ -223,52 +189,19 @@ function requireAuth(req, res, next) {
     }
     if (req.originalUrl.includes('/citas.html') || req.originalUrl.includes('/info.html')) {
         return res.redirect('/login.html?error=session');
-=======
-connectToMongo();
-
-
-function protegerRuta(req, res, next) {
-    if (req.session && req.session.usuario) {
-        res.setHeader('Cache-Control', 'no-store');
-        return next();
-    }
-    res.setHeader('Cache-Control', 'no-store');
-    return res.redirect('/login.html');
-}
-
-function isAuthenticated(req, res, next) {
-    if (req.session && req.session.username) {
-        return next();
->>>>>>> af37e0af26ac3725e33a3be26602e1ba0376eb6c
     }
     res.redirect('/?error=auth&message=' + encodeURIComponent('Por favor, inicia sesión para acceder.'));
 }
 
-<<<<<<< HEAD
 // Rutas públicas
 app.get('/', (req, res) => {
     if (req.session.username) {
         return res.redirect('/citas.html');
     }
-=======
-
-app.get('/citas.html', protegerRuta, (req, res) => {
-    res.sendFile(__dirname + '/public/citas.html');
-});
-
-app.get('/info.html', protegerRuta, (req, res) => {
-    res.sendFile(__dirname + '/public/info.html');
-});
-
-
-app.get('/', (req, res) => {
-    if (req.session.username) return res.redirect('/citas.html');
->>>>>>> af37e0af26ac3725e33a3be26602e1ba0376eb6c
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 app.get('/register.html', (req, res) => {
-<<<<<<< HEAD
     if (req.session.username) {
         return res.redirect('/citas.html');
     }
@@ -315,33 +248,17 @@ app.get('/api/mis-citas', requireAuth, async (req, res) => {
         const citasCollection = database.collection("citas");
         const userCitas = await citasCollection.find({ username: username }).toArray();
         res.json(userCitas);
-=======
-    res.sendFile(path.join(__dirname, 'public', 'register.html'));
-});
-
-
-app.get('/api/mis-citas', isAuthenticated, async (req, res) => {
-    try {
-        const citas = await client.db("pacientes").collection("citas")
-            .find({ username: req.session.username }).toArray();
-        res.json(citas);
->>>>>>> af37e0af26ac3725e33a3be26602e1ba0376eb6c
     } catch (error) {
         console.error("Error al obtener citas del usuario:", error);
         res.status(500).json({ message: 'Error interno del servidor al obtener citas.' });
     }
 });
 
-<<<<<<< HEAD
 // Sistema de login con verificación por código
-=======
-
->>>>>>> af37e0af26ac3725e33a3be26602e1ba0376eb6c
 app.post('/login', async (req, res) => {
     const { username, password } = req.body;
 
     try {
-<<<<<<< HEAD
         const database = client.db("pacientes");
         const usersCollection = database.collection("users");
         const user = await usersCollection.findOne({ username: username });
@@ -592,61 +509,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Ruta para agendar cita (protegida con requireAuth)
 app.post('/agendar-cita', requireAuth, async (req, res) => {
-=======
-        const user = await client.db("pacientes").collection("users").findOne({ username });
-
-        if (user) {
-            const match = await bcrypt.compare(password, user.password);
-            if (match) {
-                req.session.username = username;
-                req.session.usuario = { id: user._id, username: user.username };
-                return res.redirect('/citas.html');
-            }
-        }
-        
-        return res.redirect('/login.html?error=true&message=' + encodeURIComponent('Usuario o contraseña incorrectos.'));
-    } catch (error) {
-        console.error("Error en login:", error);
-        res.redirect('/login.html?error=true&message=' + encodeURIComponent('Error interno del servidor.'));
-    }
-});
-
-
-app.post('/register', async (req, res) => {
-    const { correo, nombre_completo, curp, telefono, username, password } = req.body;
-
-    try {
-        const usersCollection = client.db("pacientes").collection("users");
-        const existente = await usersCollection.findOne({ $or: [ { username }, { correo }, { curp } ] });
-        if (existente) {
-            return res.redirect('/register.html?error=true&message=' + encodeURIComponent('El usuario, correo o CURP ya está registrado.'));
-        }
-
-        // Hash de la contraseña con bcrypt
-        const saltRounds = 10;
-        const hashedPassword = await bcrypt.hash(password, saltRounds);
-
-        const nuevoUsuario = { 
-            correo, 
-            nombre_completo, 
-            curp, 
-            telefono, 
-            username, 
-            password: hashedPassword 
-        };
-        
-        await usersCollection.insertOne(nuevoUsuario);
-        res.redirect('/register.html?success=true');
-
-    } catch (error) {
-        console.error("Error en registro:", error);
-        res.redirect('/register.html?error=true&message=' + encodeURIComponent('Error interno del servidor.'));
-    }
-});
-
-
-app.post('/agendar-cita', isAuthenticated, async (req, res) => {
->>>>>>> af37e0af26ac3725e33a3be26602e1ba0376eb6c
     const { tipo_cita, fecha_cita, hora_cita, doctor, notas } = req.body;
     const username = req.session.username;
 
@@ -669,41 +531,14 @@ app.post('/agendar-cita', isAuthenticated, async (req, res) => {
     }
 });
 
-<<<<<<< HEAD
 app.listen(port, () => {
     console.log(`Servidor escuchando en http://localhost:${port}`);
 });
-=======
 
-app.get('/logout', (req, res) => {
-    req.session.destroy(err => {
-        if (err) {
-            console.error('Error al cerrar sesión:', err);
-            return res.redirect('/');
-        }
-        res.clearCookie('connect.sid');
-        res.redirect('/');
-    });
-});
-
-
-app.use(express.static(path.join(__dirname, 'public')));
-
-
-app.use((req, res) => {
-    res.status(404).sendFile(path.join(__dirname, 'public', '404.html'));
-});
-
-
-app.listen(port, () => {
-    console.log(`Servidor en http://localhost:${port}`);
-});
-
-
+// Cerrar conexión MongoDB al cerrar el servidor
 process.on('SIGINT', async () => {
     console.log('Cerrando conexión a MongoDB...');
     if (client) await client.close();
     console.log('Conexión cerrada.');
     process.exit(0);
 });
->>>>>>> af37e0af26ac3725e33a3be26602e1ba0376eb6c
