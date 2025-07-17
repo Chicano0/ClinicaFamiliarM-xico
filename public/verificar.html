@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/img/icon.png" type="image/png">
+
+    <title>Verificación de Cuenta - Clínica Familiar México</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f4f7fa;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #000000 0%, #000000 100%);
+            color: white;
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo::before {
+            content: "⚕️";
+            font-size: 1.8rem;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        .nav-menu a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-menu a:hover {
+            color: #63b3ed;
+        }
+
+        .mobile-menu {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .main-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 100px 20px 40px;
+            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+        }
+
+        .verification-container {
+            max-width: 500px;
+            width: 100%;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
+            text-align: center;
+            animation: slideInUp 0.8s ease-out;
+        }
+
+        .verification-header {
+            margin-bottom: 30px;
+        }
+
+        .verification-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: #3182ce;
+        }
+
+        .verification-header h1 {
+            font-size: 2rem;
+            color: #2d3748;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .verification-header p {
+            color: #4a5568;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .verification-info {
+            background: #f0f8ff;
+            border: 1px solid #bee3f8;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+
+        .verification-info h3 {
+            color: #2c5282;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .verification-info ul {
+            list-style: none;
+            color: #4a5568;
+        }
+
+        .verification-info li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .verification-info li::before {
+            content: "•";
+            color: #3182ce;
+            position: absolute;
+            left: 0;
+        }
+
+        .verification-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .code-input-container {
+            position: relative;
+        }
+
+        .code-input {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            text-align: center;
+            letter-spacing: 3px;
+            font-family: monospace;
+            background: #ffffff;
+            color: #2d3748;
+            transition: all 0.3s ease;
+        }
+
+        .code-input:focus {
+            outline: none;
+            border-color: #3182ce;
+            box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+        }
+
+        .code-input::placeholder {
+            color: #a0aec0;
+            letter-spacing: 2px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            font-size: 1rem;
+            background: linear-gradient(135deg, #3182ce 0%, #2c5282 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(49, 130, 206, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #718096 0%, #4a5568 100%);
+            margin-top: 10px;
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 5px 15px rgba(113, 128, 150, 0.3);
+        }
+
+        .timer-container {
+            margin-top: 20px;
+            padding: 15px;
+            background: #fef5e7;
+            border: 1px solid #f6ad55;
+            border-radius: 8px;
+            color: #744210;
+        }
+
+        .timer-text {
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        .timer-countdown {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #c53030;
+        }
+
+        .back-link {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .back-link a {
+            color: #3182ce;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .back-link a:hover {
+            color: #2c5282;
+        }
+
+        .security-note {
+            background: #f0fff4;
+            border: 1px solid #9ae6b4;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #22543d;
+            text-align: left;
+        }
+
+        .security-note::before {
+            content: "🔒";
+            margin-right: 8px;
+        }
+
+        /* Loading state */
+        .loading {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(45, 55, 72, 0.8);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #3182ce;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Validación visual */
+        .input-valid {
+            border-color: #48bb78 !important;
+        }
+
+        .input-invalid {
+            border-color: #e53e3e !important;
+        }
+
+        /* Animaciones */
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: linear-gradient(135deg, #2c5282 0%, #1a365d 100%);
+                flex-direction: column;
+                padding: 20px;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            }
+
+            .nav-menu.active {
+                display: flex;
+            }
+
+            .mobile-menu {
+                display: block;
+            }
+
+            .main-container {
+                padding: 90px 15px 30px;
+            }
+
+            .verification-container {
+                padding: 30px 20px;
+            }
+
+            .verification-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .verification-icon {
+                font-size: 3rem;
+            }
+        }
+
+        /* iPhone Mini y dispositivos pequeños */
+        @media (max-width: 390px) {
+            .nav-container {
+                padding: 0 15px;
+            }
+
+            .logo {
+                font-size: 1.2rem;
+            }
+
+            .main-container {
+                padding: 80px 10px 25px;
+            }
+
+            .verification-container {
+                padding: 25px 15px;
+            }
+
+            .verification-header h1 {
+                font-size: 1.6rem;
+            }
+
+            .verification-icon {
+                font-size: 2.5rem;
+            }
+
+            .code-input {
+                padding: 14px;
+                font-size: 1.1rem;
+            }
+
+            .btn {
+                padding: 12px;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Android pequeños */
+        @media (max-width: 360px) {
+            .verification-container {
+                padding: 20px 12px;
+            }
+
+            .verification-header h1 {
+                font-size: 1.4rem;
+            }
+
+            .code-input {
+                padding: 12px;
+                font-size: 1rem;
+            }
+
+            .btn {
+                padding: 10px;
+                font-size: 0.85rem;
+            }
+        }
+
+        /* Modo landscape para móviles */
+        @media (max-height: 500px) and (orientation: landscape) {
+            .main-container {
+                padding: 70px 15px 20px;
+            }
+
+            .verification-container {
+                padding: 20px;
+            }
+
+            .verification-header h1 {
+                font-size: 1.4rem;
+                margin-bottom: 8px;
+            }
+
+            .verification-icon {
+                font-size: 2rem;
+                margin-bottom: 10px;
+            }
+
+            .code-input {
+                padding: 12px;
+            }
+
+            .btn {
+                padding: 10px;
+                font-size: 0.9rem;
+            }
+        }
+        
+    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+</head>
+
+<body>
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+    </div>
+
+    <header class="header">
+        <nav class="nav-container">
+            <div class="logo">Clínica Familiar México</div>
+            <ul class="nav-menu" id="nav-menu">
+                <li><a href="/">Inicio</a></li>
+                <li><a href="index.html#servicios">Servicios</a></li>
+                <li><a href="index.html#contacto">Contacto</a></li>
+                <li><a href="login.html">Iniciar Sesión</a></li>
+            </ul>
+            <button class="mobile-menu" id="mobile-menu">☰</button>
+        </nav>
+    </header>
+
+    <main class="main-container">
+        <div class="verification-container">
+            <div class="verification-header">
+                <div class="verification-icon">📧</div>
+                <h1>Verificar tu Cuenta</h1>
+                <p>Hemos enviado un código de verificación a tu correo electrónico. Ingresa el código para completar tu registro.</p>
+            </div>
+
+
+            <form class="verification-form" id="verificationForm">
+                <div class="code-input-container">
+                    <input type="text" 
+                           class="code-input" 
+                           id="verificationCode" 
+                           name="code" 
+                           placeholder="000000" 
+                           maxlength="6" 
+                           pattern="[0-9]{6}"
+                           required
+                           autocomplete="off">
+                </div>
+
+                <button type="submit" class="btn" id="verifyBtn">
+                    Verificar Código
+                </button>
+
+                <button type="button" class="btn btn-secondary" id="resendBtn">
+                    Reenviar Código
+                </button>
+            </form>
+
+            <div class="timer-container" id="timerContainer">
+                <div class="timer-text">El código expirará en:</div>
+                <div class="timer-countdown" id="countdown">10:00</div>
+            </div>
+
+            <div class="security-note">
+                Por tu seguridad, nunca compartas este código con nadie. Nuestro personal nunca te lo solicitará por teléfono.
+            </div>
+
+            <div class="back-link">
+                <a href="register.html">← Volver al registro</a>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+    <script>
+        // Función para sanitizar entrada
+        function sanitizeInput(input) {
+            const div = document.createElement('div');
+            div.textContent = input;
+            return div.innerHTML;
+        }
+
+        // Variables globales
+        let countdownInterval;
+        let timeLeft = 600; // 10 minutos en segundos
+
+        // Elementos del DOM
+        const form = document.getElementById('verificationForm');
+        const codeInput = document.getElementById('verificationCode');
+        const verifyBtn = document.getElementById('verifyBtn');
+        const resendBtn = document.getElementById('resendBtn');
+        const countdownElement = document.getElementById('countdown');
+        const loading = document.getElementById('loading');
+
+        // Inicializar contador
+        function startCountdown() {
+            countdownInterval = setInterval(() => {
+                timeLeft--;
+                updateCountdownDisplay();
+                
+                if (timeLeft <= 0) {
+                    clearInterval(countdownInterval);
+                    handleCodeExpired();
+                }
+            }, 1000);
+        }
+
+        // Actualizar display del contador
+        function updateCountdownDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            countdownElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            
+            // Cambiar color cuando quede poco tiempo
+            if (timeLeft <= 60) {
+                countdownElement.style.color = '#e53e3e';
+            } else if (timeLeft <= 180) {
+                countdownElement.style.color = '#dd6b20';
+            }
+        }
+
+        // Manejar código expirado
+        function handleCodeExpired() {
+            codeInput.disabled = true;
+            verifyBtn.disabled = true;
+            countdownElement.textContent = 'EXPIRADO';
+            countdownElement.style.color = '#e53e3e';
+            
+            Swal.fire({
+                icon: 'warning',
+                title: 'Código Expirado',
+                text: 'El código de verificación ha expirado. Solicita uno nuevo.',
+                confirmButtonText: 'Solicitar Nuevo Código',
+                confirmButtonColor: '#3182ce'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    resendCode();
+                }
+            });
+        }
+
+        // Validar código
+        function validateCode(code) {
+            return /^[0-9]{6}$/.test(code);
+        }
+
+        // Manejar envío del formulario
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const code = sanitizeInput(codeInput.value.trim());
+            
+            if (!validateCode(code)) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Código Inválido',
+                    text: 'Por favor ingresa un código de 6 dígitos.',
+                    confirmButtonText: 'Entendido',
+                    confirmButtonColor: '#3182ce'
+                });
+                return;
+            }
+
+            loading.style.display = 'flex';
+            verifyBtn.disabled = true;
+
+            try {
+                const response = await fetch('/verify-code', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ code: code })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    clearInterval(countdownInterval);
+                    Swal.fire({
+                        icon: 'success',
+                        title: '¡Cuenta Verificada!',
+                        text: result.message,
+                        confirmButtonText: 'Iniciar Sesión',
+                        confirmButtonColor: '#48bb78'
+                    }).then(() => {
+                        window.location.href = '/login.html';
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error de Verificación',
+                        text: result.message,
+                        confirmButtonText: 'Intentar Nuevamente',
+                        confirmButtonColor: '#3182ce'
+                    });
+                    codeInput.value = '';
+                    codeInput.focus();
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error de Conexión',
+                    text: 'No se pudo verificar el código. Intenta nuevamente.',
+                    confirmButtonText: 'Reintentar',
+                    confirmButtonColor: '#3182ce'
+                });
+            } finally {
+                loading.style.display = 'none';
+                verifyBtn.disabled = false;
+            }
+        });
+
+        // Función para reenviar código
+        async function resendCode() {
+            loading.style.display = 'flex';
+            resendBtn.disabled = true;
+
+            try {
+                const response = await fetch('/resend-code', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // Reiniciar contador
+                    timeLeft = 600;
+                    clearInterval(countdownInterval);
+                    startCountdown();
+                    
+                    // Habilitar campos
+                    codeInput.disabled = false;
+                    verifyBtn.disabled = false;
+                    codeInput.value = '';
+                    codeInput.focus();
+                    
+                    // Resetear colores
+                    countdownElement.style.color = '#c53030';
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Código Reenviado',
+                        text: result.message,
+                        confirmButtonText: 'Entendido',
+                        confirmButtonColor: '#48bb78'
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: result.message,
+                        confirmButtonText: 'Entendido',
+                        confirmButtonColor: '#3182ce'
+                    });
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error de Conexión',
+                    text: 'No se pudo reenviar el código. Intenta nuevamente.',
+                    confirmButtonText: 'Reintentar',
+                    confirmButtonColor: '#3182ce'
+                });
+            } finally {
+                loading.style.display = 'none';
+                resendBtn.disabled = false;
+            }
+        }
+
+        // Event listener para reenviar código
+        resendBtn.addEventListener('click', resendCode);
+
+        // Validación en tiempo real del código
+        codeInput.addEventListener('input', function() {
+            // Solo permitir números
+            this.value = this.value.replace(/[^0-9]/g, '');
+            
+            // Validar longitud
+            if (this.value.length === 6) {
+                this.classList.add('input-valid');
+                this.classList.remove('input-invalid');
+            } else {
+                this.classList.remove('input-valid');
+                this.classList.add('input-invalid');
+            }
+        });
+
+        // Auto-focus en el campo de código
+        codeInput.focus();
+
+        // Inicializar contador al cargar la página
+        startCountdown();
+
+        // Prevenir gestos en móviles
+        document.addEventListener('touchstart', function () {}, { passive: true });
+        document.addEventListener('gesturestart', function (e) { e.preventDefault(); });
+
+        // Manejo del menú móvil
+        const mobileMenu = document.getElementById('mobile-menu');
+        const navMenu = document.getElementById('nav-menu');
+
+        mobileMenu.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+        });
+
+        // Verificar si hay sesión válida al cargar
+        window.addEventListener('load', () => {
+            // Si no hay sesión de usuario pendiente, redirigir al registro
+            fetch('/verify-code', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ code: 'CHECK_SESSION' })
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.message && result.message.includes('Sesión expirada')) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Sesión Expirada',
+                        text: 'Tu sesión de verificación ha expirado. Por favor, regístrate nuevamente.',
+                        confirmButtonText: 'Ir al Registro',
+                        confirmButtonColor: '#3182ce',
+                        allowOutsideClick: false
+                    }).then(() => {
+                        window.location.href = '/register.html';
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error verificando sesión:', error);
+            });
+        });
+    </script>
+</body>
+
+</html>

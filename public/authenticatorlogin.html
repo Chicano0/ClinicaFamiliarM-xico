@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="/img/icon.png" type="image/png" />
+    <title>Verificación de Autenticador - Clínica Familiar México</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" />
+</head>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        line-height: 1.5;
+        color: #333;
+        background: #f8fafc;
+        min-height: 100vh;
+    }
+
+    .header {
+        background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+        color: white;
+        padding: 0.75rem 0;
+        position: fixed;
+        width: 100%;
+        top: 0;
+        z-index: 1000;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .nav-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 1rem;
+    }
+
+    .logo {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .logo::before {
+        content: "⚕️";
+        font-size: 1.3rem;
+    }
+
+    .nav-menu {
+        display: flex;
+        list-style: none;
+        gap: 1.5rem;
+    }
+
+    .nav-menu a {
+        color: white;
+        text-decoration: none;
+        transition: color 0.3s;
+        font-weight: 500;
+        font-size: 0.9rem;
+    }
+
+    .nav-menu a:hover {
+        color: #63b3ed;
+    }
+
+    .mobile-menu {
+        display: none;
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.3rem;
+        cursor: pointer;
+    }
+
+    .main-container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 70px 1rem 1rem;
+        background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+    }
+
+    .verification-container {
+        max-width: 600px;
+        width: 100%;
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        border: 1px solid #e2e8f0;
+        text-align: center;
+        animation: slideInUp 0.6s ease-out;
+    }
+
+    .verification-header {
+        margin-bottom: 1rem;
+    }
+
+    .verification-icon {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+        color: #3182ce;
+    }
+
+    .verification-header h1 {
+        font-size: 1.3rem;
+        color: #2d3748;
+        margin-bottom: 0.25rem;
+        font-weight: 600;
+    }
+
+    .verification-header p {
+        color: #4a5568;
+        font-size: 0.85rem;
+        line-height: 1.4;
+    }
+
+    .verification-form {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .code-input-container {
+        position: relative;
+    }
+
+    .code-input {
+        width: 100%;
+        padding: 0.75rem;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 1rem;
+        text-align: center;
+        letter-spacing: 2px;
+        font-family: 'Courier New', monospace;
+        background: #ffffff;
+        color: #2d3748;
+        transition: all 0.3s ease;
+    }
+
+    .code-input:focus {
+        outline: none;
+        border-color: #3182ce;
+        box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+    }
+
+    .code-input::placeholder {
+        color: #a0aec0;
+        letter-spacing: 1px;
+    }
+
+    .btn {
+        width: 100%;
+        padding: 0.75rem;
+        font-size: 0.85rem;
+        background: linear-gradient(135deg, #3182ce 0%, #2c5282 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 600;
+    }
+
+    .btn:hover:not(:disabled) {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(49, 130, 206, 0.3);
+    }
+
+    .btn:active {
+        transform: translateY(0);
+    }
+
+    .btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .btn-secondary {
+        background: linear-gradient(135deg, #718096 0%, #4a5568 100%);
+        margin-top: 0.25rem;
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+        box-shadow: 0 4px 12px rgba(113, 128, 150, 0.3);
+    }
+
+    .timer-container {
+        margin-top: 0.75rem;
+        padding: 0.75rem;
+        background: #fef5e7;
+        border: 1px solid #f6ad55;
+        border-radius: 8px;
+        color: #744210;
+    }
+
+    .timer-text {
+        font-size: 0.8rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .timer-countdown {
+        font-size: 1rem;
+        font-weight: bold;
+        color: #c53030;
+    }
+
+    .back-link {
+        margin-top: 1rem;
+        padding-top: 0.75rem;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    .back-link a {
+        color: #3182ce;
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 0.9rem;
+        transition: color 0.3s;
+    }
+
+    .back-link a:hover {
+        color: #2c5282;
+    }
+
+    .security-note {
+        background: #f0fff4;
+        border: 1px solid #9ae6b4;
+        border-radius: 8px;
+        padding: 0.75rem;
+        margin-top: 0.75rem;
+        font-size: 0.75rem;
+        color: #22543d;
+        text-align: left;
+    }
+
+    .security-note::before {
+        content: "🔒";
+        margin-right: 0.5rem;
+    }
+
+    /* Loading state */
+    .loading {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(45, 55, 72, 0.8);
+        z-index: 9999;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .spinner {
+        width: 40px;
+        height: 40px;
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        border-top: 3px solid #3182ce;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    /* Validación visual */
+    .input-valid {
+        border-color: #48bb78 !important;
+    }
+
+    .input-invalid {
+        border-color: #e53e3e !important;
+    }
+
+    /* Animaciones */
+    @keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .nav-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(135deg, #2c5282 0%, #1a365d 100%);
+            flex-direction: column;
+            padding: 1rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-menu.active {
+            display: flex;
+        }
+
+        .mobile-menu {
+            display: block;
+        }
+
+        .main-container {
+            padding: 60px 1rem 1rem;
+        }
+
+        .verification-container {
+            padding: 1.25rem;
+            max-width: 500px;
+        }
+
+        .verification-header h1 {
+            font-size: 1.3rem;
+        }
+
+        .verification-icon {
+            font-size: 2rem;
+        }
+    }
+
+    /* Dispositivos pequeños */
+    @media (max-width: 480px) {
+        .nav-container {
+            padding: 0 0.75rem;
+        }
+
+        .logo {
+            font-size: 1rem;
+        }
+
+        .main-container {
+            padding: 55px 0.75rem 0.75rem;
+        }
+
+        .verification-container {
+            padding: 1rem;
+            max-width: 450px;
+        }
+
+        .verification-header h1 {
+            font-size: 1.2rem;
+        }
+
+        .verification-icon {
+            font-size: 1.8rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .code-input {
+            padding: 0.75rem;
+            font-size: 1rem;
+        }
+
+        .btn {
+            padding: 0.75rem;
+            font-size: 0.85rem;
+        }
+
+        .timer-container {
+            padding: 0.75rem;
+        }
+
+        .security-note {
+            padding: 0.75rem;
+            font-size: 0.75rem;
+        }
+    }
+
+    /* Dispositivos muy pequeños */
+    @media (max-width: 360px) {
+        .verification-container {
+            padding: 0.875rem;
+            max-width: 400px;
+        }
+
+        .verification-header h1 {
+            font-size: 1.1rem;
+        }
+
+        .verification-header p {
+            font-size: 0.85rem;
+        }
+
+        .code-input {
+            padding: 0.625rem;
+            font-size: 0.95rem;
+        }
+
+        .btn {
+            padding: 0.625rem;
+            font-size: 0.8rem;
+        }
+    }
+
+    /* Modo landscape para móviles */
+    @media (max-height: 600px) and (orientation: landscape) {
+        .main-container {
+            padding: 60px 1rem 1rem;
+        }
+
+        .verification-container {
+            padding: 1rem;
+        }
+
+        .verification-header h1 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .verification-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .timer-container {
+            padding: 0.625rem;
+        }
+
+        .security-note {
+            padding: 0.625rem;
+            font-size: 0.75rem;
+        }
+    }
+
+    /* Muy pequeño en landscape */
+    @media (max-height: 500px) and (orientation: landscape) {
+        .main-container {
+            padding: 55px 1rem 0.5rem;
+        }
+
+        .verification-container {
+            padding: 0.875rem;
+        }
+
+        .verification-header {
+            margin-bottom: 1rem;
+        }
+
+        .verification-icon {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .verification-header h1 {
+            font-size: 1.1rem;
+        }
+
+        .verification-header p {
+            font-size: 0.8rem;
+        }
+    }
+</style>
+
+<body>
+    <div class="loading" id="loading" style="display:none;">
+        <div class="spinner"></div>
+    </div>
+
+    <header class="header">
+        <nav class="nav-container">
+            <div class="logo">Clínica Familiar México</div>
+            <ul class="nav-menu" id="nav-menu">
+                <li><a href="/">Inicio</a></li>
+                <li><a href="index.html#servicios">Servicios</a></li>
+                <li><a href="index.html#contacto">Contacto</a></li>
+                <li><a href="login.html">Iniciar Sesión</a></li>
+            </ul>
+            <button class="mobile-menu" id="mobile-menu">☰</button>
+        </nav>
+    </header>
+
+    <main class="main-container">
+        <div class="verification-container">
+            <div class="verification-header">
+                <div class="verification-icon">🔐</div>
+                <h1>Código de autenticación</h1>
+                <p>Ingresa el código enviado a tu correo para continuar.</p>
+            </div>
+
+            <form class="verification-form" id="authenticatorForm">
+                <div class="code-input-container">
+                    <input
+                        type="text"
+                        class="code-input"
+                        id="authCode"
+                        name="code"
+                        placeholder="000000"
+                        maxlength="6"
+                        pattern="[0-9]{6}"
+                        required
+                        autocomplete="off"
+                    />
+                </div>
+
+                <button type="submit" class="btn" id="submitBtn">Verificar Código</button>
+                <button type="button" class="btn btn-secondary" id="resendBtn">Reenviar Código</button>
+            </form>
+
+            <div class="timer-container" id="timerContainer">
+                <div class="timer-text">El código expirará en:</div>
+                <div class="timer-countdown" id="countdown">10:00</div>
+            </div>
+
+            <div class="security-note">
+                Por seguridad, no compartas este código. Nuestro personal nunca te lo solicitará por teléfono.
+            </div>
+
+            <div class="back-link">
+                <a href="login.html">← Volver al inicio de sesión</a>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+    <script>
+        // Sanitizar entrada
+        function sanitizeInput(input) {
+            const div = document.createElement('div');
+            div.textContent = input;
+            return div.innerHTML;
+        }
+
+        // Variables para el contador
+        let countdownInterval;
+        let timeLeft = 600; // 10 minutos en segundos
+
+        // Elementos DOM
+        const form = document.getElementById('authenticatorForm');
+        const codeInput = document.getElementById('authCode');
+        const submitBtn = document.getElementById('submitBtn');
+        const resendBtn = document.getElementById('resendBtn');
+        const countdownElement = document.getElementById('countdown');
+        const loading = document.getElementById('loading');
+
+        function startCountdown() {
+            countdownInterval = setInterval(() => {
+                timeLeft--;
+                updateCountdownDisplay();
+
+                if (timeLeft <= 0) {
+                    clearInterval(countdownInterval);
+                    handleCodeExpired();
+                }
+            }, 1000);
+        }
+
+        function updateCountdownDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            countdownElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+            if (timeLeft <= 60) {
+                countdownElement.style.color = '#e53e3e';
+            } else if (timeLeft <= 180) {
+                countdownElement.style.color = '#dd6b20';
+            } else {
+                countdownElement.style.color = '#3182ce';
+            }
+        }
+
+        function handleCodeExpired() {
+            codeInput.disabled = true;
+            submitBtn.disabled = true;
+            countdownElement.textContent = 'EXPIRADO';
+            countdownElement.style.color = '#e53e3e';
+
+            Swal.fire({
+                icon: 'warning',
+                title: 'Código Expirado',
+                text: 'El código de autenticación ha expirado. Solicita uno nuevo.',
+                confirmButtonText: 'Solicitar Nuevo Código',
+                confirmButtonColor: '#3182ce'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    resendCode();
+                }
+            });
+        }
+
+        function validateCode(code) {
+            return /^[0-9]{6}$/.test(code);
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const code = sanitizeInput(codeInput.value.trim());
+
+            if (!validateCode(code)) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Código Inválido',
+                    text: 'Por favor ingresa un código de 6 dígitos.',
+                    confirmButtonText: 'Entendido',
+                    confirmButtonColor: '#3182ce'
+                });
+                return;
+            }
+
+            loading.style.display = 'flex';
+            submitBtn.disabled = true;
+
+            try {
+                const response = await fetch('/verify-login-code', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ code }),
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    clearInterval(countdownInterval);
+                    Swal.fire({
+                        icon: 'success',
+                        title: '¡Código Verificado!',
+                        text: result.message,
+                        confirmButtonText: 'Continuar',
+                        confirmButtonColor: '#48bb78'
+                    }).then(() => {
+                        window.location.href = result.redirect || '/dashboard.html';
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error de Verificación',
+                        text: result.message,
+                        confirmButtonText: 'Intentar Nuevamente',
+                        confirmButtonColor: '#3182ce'
+                    });
+                    codeInput.value = '';
+                    codeInput.focus();
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error de Conexión',
+                    text: 'No se pudo verificar el código. Intenta nuevamente.',
+                    confirmButtonText: 'Reintentar',
+                    confirmButtonColor: '#3182ce'
+                });
+            } finally {
+                loading.style.display = 'none';
+                submitBtn.disabled = false;
+            }
+        });
+
+        async function resendCode() {
+            loading.style.display = 'flex';
+            resendBtn.disabled = true;
+
+            try {
+                const response = await fetch('/resend-login-code', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                });
+                const result = await response.json();
+
+                if (result.success) {
+                    // Reiniciar contador
+                    timeLeft = 600;
+                    clearInterval(countdownInterval);
+                    startCountdown();
+
+                    // Habilitar campos
+                    codeInput.disabled = false;
+                    submitBtn.disabled = false;
+                    codeInput.value = '';
+                    codeInput.focus();
+
+                    countdownElement.style.color = '#3182ce';
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Código Reenviado',
+                        text: result.message,
+                        confirmButtonText: 'Entendido',
+                        confirmButtonColor: '#48bb78'
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: result.message,
+                        confirmButtonText: 'Entendido',
+                        confirmButtonColor: '#3182ce'
+                    });
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error de Conexión',
+                    text: 'No se pudo reenviar el código. Intenta nuevamente.',
+                    confirmButtonText: 'Reintentar',
+                    confirmButtonColor: '#3182ce'
+                });
+            } finally {
+                loading.style.display = 'none';
+                resendBtn.disabled = false;
+            }
+        }
+
+        resendBtn.addEventListener('click', resendCode);
+
+        codeInput.addEventListener('input', function () {
+            this.value = this.value.replace(/[^0-9]/g, '');
+
+            if (this.value.length === 6) {
+                this.classList.add('input-valid');
+                this.classList.remove('input-invalid');
+            } else {
+                this.classList.remove('input-valid');
+                this.classList.add('input-invalid');
+            }
+        });
+
+        codeInput.focus();
+        startCountdown();
+
+        // Menú móvil
+        const mobileMenu = document.getElementById('mobile-menu');
+        const navMenu = document.getElementById('nav-menu');
+
+        mobileMenu.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+        });
+    </script>
+</body>
+
+</html>
